@@ -68,4 +68,15 @@ else
     echo "  -> kubectl already installed"
 fi
 
+# Helm
+if ! command -v helm &>/dev/null; then
+    echo "  -> Installing Helm..."
+    curl -fsSL https://baltocdn.com/helm/signing.asc | sudo gpg --dearmor -o /usr/share/keyrings/helm-archive-keyring.gpg 2>/dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm-archive-keyring.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list >/dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq helm
+else
+    echo "  -> Helm already installed"
+fi
+
 echo "==> All prerequisites installed."

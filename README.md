@@ -5,7 +5,7 @@ Inkus is an ***EXTREMELY-VIBECODED*** [Incus](https://github.com/lxc/incus) VM-b
 ## Prerequisites
 
 - Linux Mint, Ubuntu, or Debian host
-- `make prereqs` installs everything else: Terraform, Ansible, Incus, and kubectl
+- `make prereqs` installs everything else: Terraform, Ansible, Incus, kubectl, and Helm
 
 ## Quick Start
 
