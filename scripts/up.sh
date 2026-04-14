@@ -2,7 +2,14 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-source "$REPO_ROOT/config.env"
+
+# Generate .env from example.env if it doesn't exist
+if [ ! -f "$REPO_ROOT/.env" ]; then
+    echo "==> No .env found — copying from example.env..."
+    cp "$REPO_ROOT/example.env" "$REPO_ROOT/.env"
+fi
+
+source "$REPO_ROOT/.env"
 
 echo "========================================"
 echo " Inkus — bringing up cluster"

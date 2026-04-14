@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-source "$REPO_ROOT/config.env"
+source "$REPO_ROOT/.env"
 
 echo "==> Destroying Inkus cluster..."
 
