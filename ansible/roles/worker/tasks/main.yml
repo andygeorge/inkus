@@ -1,0 +1,11 @@
+---
+- name: Check if node has already joined
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: Join the cluster
+  command: >
+    {{ hostvars[groups['controlplane'][0]].kubeadm_join_command }}
+    --node-name={{ inventory_hostname }}
+  when: not kubelet_conf.stat.exists
