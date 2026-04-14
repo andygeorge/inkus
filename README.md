@@ -1,6 +1,6 @@
 # Inkus
 
-Inkus is an [Incus](https://github.com/lxc/incus) VM-based, minimal Kubernetes cluster, provisioned with Terraform, configured with Ansible, and bootstrapped with kubeadm. The entire stack is brought up or torn down by a single command.
+Inkus is an ***EXTREMELY-VIBECODED*** [Incus](https://github.com/lxc/incus) VM-based, minimal Kubernetes cluster, provisioned with Terraform, configured with Ansible, and bootstrapped with kubeadm. The entire stack is brought up or torn down by a single command.
 
 ## Prerequisites
 
