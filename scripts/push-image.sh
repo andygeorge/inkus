@@ -49,7 +49,7 @@ source "$REPO_ROOT/.env"
 
 REQUIRED_BINS=(docker)
 if [ "$USE_SSH" -eq 1 ]; then
-    REQUIRED_BINS+=(ssh scp)
+    REQUIRED_BINS+=(ssh)
 else
     REQUIRED_BINS+=(incus)
 fi
@@ -101,8 +101,9 @@ if [ "$USE_SSH" -eq 1 ]; then
         exit 1
     fi
     SSH_OPTS=(-i "$SSH_KEY" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -o LogLevel=ERROR)
-    # Non-root user → land the tar in /tmp, use sudo for ctr.
-    TAR_REMOTE="/tmp/inkus-push.tar"
+    # Non-root user → land the tar in /tmp, use sudo for ctr. PID suffix avoids
+    # collisions between concurrent runs.
+    TAR_REMOTE="/tmp/inkus-push.$$.tar"
 else
     # Verify each Incus instance exists and is RUNNING.
     for i in "${!NODE_TARGETS[@]}"; do
@@ -117,8 +118,9 @@ else
             exit 1
         fi
     done
-    # incus exec runs as root → write to /root.
-    TAR_REMOTE="/root/inkus-push.tar"
+    # incus exec runs as root → write to /root. PID suffix avoids collisions
+    # between concurrent runs.
+    TAR_REMOTE="/root/inkus-push.$$.tar"
 fi
 
 # --- Export once ---
@@ -143,8 +145,10 @@ for i in "${!NODE_LABELS[@]}"; do
 
     if [ "$USE_SSH" -eq 1 ]; then
         echo "==> $label (ssh: ${SSH_USER}@${target})"
-        echo "    scp tar..."
-        scp "${SSH_OPTS[@]}" "$TAR_HOST" "${SSH_USER}@${target}:${TAR_REMOTE}"
+        echo "    streaming tar (umask 077)..."
+        # umask before cat so the remote file is 0600 from creation — closes
+        # the window where /tmp/inkus-push.*.tar would be world-readable.
+        ssh "${SSH_OPTS[@]}" "${SSH_USER}@${target}" "umask 077 && cat > ${TAR_REMOTE}" < "$TAR_HOST"
         echo "    importing into containerd (k8s.io namespace)..."
         ssh "${SSH_OPTS[@]}" "${SSH_USER}@${target}" "sudo ctr -n k8s.io images import ${TAR_REMOTE} && rm -f ${TAR_REMOTE}"
     else
