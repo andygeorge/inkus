@@ -41,6 +41,7 @@ kubectl get nodes
 | `make status` | `kubectl get nodes` using local kubeconfig |
 | `make prereqs` | install host prerequisites only |
 | `make clean` | `make down` + remove .terraform state and .ssh keys |
+| `make push-image IMAGE=name:tag` | ship a local Docker image into containerd on every node — see [docs/push-image.md](docs/push-image.md) |
 
 ## Environment Variables
 
@@ -52,3 +53,4 @@ Additional documentation in [`docs`](docs/):
 
 - [Stack](docs/stack.md) (Clod-generated)
 - [Project Layout](docs/project_layout.md) (Clod-generated)
+- [Pushing Local Docker Images to Nodes](docs/push-image.md)
